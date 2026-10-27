@@ -257,3 +257,173 @@ cd ../evidence/bds && sha256sum *.pdf > MANIFEST.sha256
 
 Full gate: `cd bds && ./verify.sh` — nine steps, including that the four fetched
 documents still match their recorded hashes.
+
+---
+
+# Addendum 1 and the FISH reports — 2026-10-27, second fetch
+
+Four more files arrived from the district's archived-bids page. One of them
+**changes an earlier conclusion in this document**, so it comes first.
+
+## 10. Correction: the base RFP was already superseded when I read it
+
+RFP 19-10 §5 says addenda are the only official method of clarification and that
+failure to acknowledge one "may result in rejection of the bid." I read the base
+RFP and reported twelve sites. **Addendum No. 1, dated 2019-05-16, deletes one of
+them:**
+
+> Change original RFP 19-10, page 5 of 71, delete Bay High School from services.
+> Change original RFP 19-10 Exhibit B, page 58 of 71, delete Bay High School from
+> pricing sheet. Change original RFP 19-10 Exhibit C, page 60 of 71, delete Bay
+> High School from pricing sheet
+
+`RFP-19-10-ADDENDUM-1-Contract-Cleaning-Services.pdf`, 271,775 bytes,
+SHA-256 `373aef5a…ea10e`, pp.1–2.
+
+**Operative scope is therefore 11 sites, not 12**, and excludes Bay High School
+(0061, 146,638 sq ft). `bds scope` now applies the amendment and reports both the
+base table and the removal:
+
+```
+base table rows:      12
+removed by addendum:  1
+  - 0061 Bay High School (146,638 sq ft) by RFP-19-10-ADDENDUM-1
+operative sites:      11
+operative area:       634,042 sq ft
+```
+
+The instrument was reporting a site the district had already removed. That is
+recorded here because it is the exact failure this project exists to catch, and
+it was caught in my own instrument rather than in someone else's.
+
+**General lesson for the next session:** the base document is not the operative
+document. Where a solicitation warns that addenda exist, the audit is incomplete
+until they are fetched. `AMENDMENTS` in `bds/src/addendum.ts` is the register.
+
+## 11. The FISH reports — what Q2 of the addendum was pointing at
+
+Addendum 1 Q2 asks for "FISH reports of facilities" and answers that they were
+uploaded to the district site. `refishreports.zip` (1,292,110 bytes,
+`eb4614fb…8293`) contains **eight** FISH reports, one per site, all dated
+2019-05-16.
+
+FISH is the **Florida Inventory of School Houses** — the state facility
+inventory. Each report gives, per building and room by room: room number, net
+square footage, FISH design code, room function, student and staff stations,
+**floor covering**, year of construction, and condition.
+
+| Report | Bytes | SHA-256 (8) |
+| :--- | ---: | :--- |
+| `B. Point 5-16-19.pdf` | 217,794 | `c9bd3d90` |
+| `Bozeman 5-16-19.pdf` | 345,595 | `f32d46b1` |
+| `Callaway 5-16-19.pdf` | 185,020 | `1a49eed8` |
+| `Lynn Haven 5-16-19.pdf` | 168,329 | `0c3b6439` |
+| `Mosley 5-16-19.pdf` | 276,516 | `d56aab9c` |
+| `Nelson Bldg 5-16-19.pdf` | 119,586 | `6a12b573` |
+| `Tommy Smith 5-16-19.pdf` | 182,365 | `758eca81` |
+| `Wellness, RL Young Service, SS Bldg 2,4,5,6.pdf` | 162,230 | `1425d294` |
+
+`31.1-Tommy-Smith-ES.pdf` (803,937 bytes, `9eb2519e…d9b3`) is the **floorplan**
+requested in Addendum 1 Q1. It is a single-page image with no extractable text,
+so it is recorded as LOCATED and not parsed.
+
+### Breakfast Point Academy, room by room
+
+`B. Point 5-16-19.pdf`, 33 pages, MSID **571**, "BREAKFAST POINT SCHOOL",
+PK–08, FTE 1087.89 (2017/18), capacity 1,617, on 40 acres.
+
+**388 rooms parsed. The parse is validated against the report's own printed
+subtotals, building by building, and reconciles exactly:**
+
+| Building | Name | Printed subtotal | Parsed rooms |
+| :--- | :--- | ---: | ---: |
+| 1 | Administration/Media | 30,186 | 30,186 |
+| 2 | Food Service/Multi-Purpose | 25,281 | 25,281 |
+| 3 | Middle School Classrooms | 22,577 | 22,577 |
+| 4 | Elementary Classrooms | 73,280 | 73,280 |
+| 5 | Gymnasium | 24,351 | 24,351 |
+| 100 | MODULARS | (no subtotal printed) | 9,837 |
+| | **Total** | **175,675** | **185,512** |
+
+That reconciliation is the reason to trust the row parse. It did not hold on the
+first two attempts — the parser lost 26 rows to a repeated column caption and 87
+more to a three-digit-only design-code rule — and the subtotals are what exposed
+it. Both repairs are pinned in `bds/test/fish.test.ts`.
+
+Floor coverings, which is what the RFP's task list actually operates on:
+
+| Covering | Area |
+| :--- | ---: |
+| Composition tile | 120,030 |
+| Carpet | 21,843 |
+| Concrete | 21,108 |
+| Ceramic tile | 9,386 |
+| Other | 8,722 |
+| Quarry tile | 4,423 |
+
+Task surfaces: **86 restrooms**, **68 classrooms**, 24 circulation areas.
+
+## 12. A second discrepancy, and why it is left unresolved
+
+The pricing sheet gives **108,941 sq ft** for Breakfast Point Academy (Exhibit B
+p.58, Exhibit C p.60 — the two pages agree with each other). The FISH report,
+from the same solicitation period, gives **185,512** net sq ft for the same
+campus, MSID 571.
+
+I tried to close that gap rather than assume wrongdoing, by excluding space a
+cleaning contract would not normally service:
+
+| Exclusion | Area excluded | Remaining |
+| :--- | ---: | ---: |
+| — (gross net) | — | 185,512 |
+| Covered walkways | 10,882 | 174,630 |
+| Mechanical rooms | 9,335 | 165,295 |
+| Storage | 8,290 | 157,005 |
+| Covered play area | 6,670 | **150,335** |
+
+**The gap does not close.** Best-case for reconciliation, 150,335 sq ft against a
+bid area of 108,941 — still 38% larger, a residual of 41,394 sq ft.
+
+I stopped there deliberately. Continuing to remove categories until the two
+numbers meet would be fitting the data to a conclusion, which is exactly the
+motivated reasoning this project forbids. The instrument reports the residual and
+names what would settle it:
+
+> RFP 19-10 §14.1.2 describes the bid area only as "the most recent and up to
+> date information available to BDS", and §12.2.2 says it is accurate "to the
+> best knowledge of BDS" and "for contract and bidding purposes only." Settling
+> this needs either the executed contract's scope schedule or a district
+> statement of which rooms the bid area excludes.
+
+**What is established:** two documents the district published for the same
+solicitation state areas for the same campus that differ by 76,571 sq ft gross
+(66,734 against the printed subtotals), and the difference survives every
+exclusion that is defensible without further information.
+
+**What is not established:** which figure governs, whether either is wrong, and
+whether anything follows from it. An area figure being inconsistent is not
+evidence that anyone did anything.
+
+## 13. The staffing question is still open
+
+The FISH reports contain no hours, no staffing, and no custodial data. A search
+of the Breakfast Point report for hour/shift/staff/custodial returns nothing but
+"FTE" in the enrolment table.
+
+So `assess()` still returns `UNMEASURED` / `NO_PAID_HOURS`. Five documents have
+been fetched and the figure that would convert this into a measurement is still
+not among them. `§9` remains the fetch list and its priority order is unchanged:
+the executed contract is first.
+
+## 14. Reproduce the second fetch
+
+```bash
+cd bds
+node dist/src/cli.js scope     --extract /tmp/rfp.txt      # 11 operative sites
+node dist/src/cli.js fish      --fish '../evidence/bds/site-reports/B. Point 5-16-19.txt'
+node dist/src/cli.js reconcile --fish '../evidence/bds/site-reports/B. Point 5-16-19.txt' \
+                                --bid-sqft 108941          # exits 1: gap not closed
+```
+
+`reconcile` exits 1 by design when the gap does not close. That exit is the
+finding, not a failure of the tool.

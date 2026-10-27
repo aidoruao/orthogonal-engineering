@@ -85,7 +85,7 @@ with the invariant deleted, so the gate rejects that class too.
 ./verify.sh
 ```
 
-Ten steps: strict typecheck; 22 tests; both Lean proofs; eight negative controls
+Ten steps: strict typecheck; 39 tests; both Lean proofs; eight negative controls
 rejected for cause; the **jurisdiction bridge** — `admissible()` regenerated from
 the built TypeScript and proved to agree with `Righteous` on all 160
 combinations of severity, warrant, evidence tier and falsifier; the figures and

@@ -17,6 +17,16 @@
 import { readFileSync } from "node:fs";
 import { parseArgs } from "node:util";
 
+import { AMENDMENTS, applyAmendments, operativeSquareFeet } from "./addendum.js";
+import {
+  compareArea,
+  floorCoveringTotals,
+  parseFish,
+  parsedRoomArea,
+  permanentTotalArea,
+  reconcile,
+  roomsMatching,
+} from "./fish.js";
 import {
   assess,
   impliedAnnualMinutesPerThousandSqFt,
@@ -211,6 +221,86 @@ function commandBreakeven(values: Readonly<Record<string, string | boolean | und
   return 0;
 }
 
+
+function commandFish(values: Readonly<Record<string, string | boolean | undefined>>): number {
+  const path = values["fish"];
+  if (typeof path !== "string") throw new Error("--fish is required");
+  const report = parseFish(readFileSync(path, "utf8"));
+  const lines: string[] = [];
+  lines.push(`FISH report — ${report.facilityName || "unknown facility"} (MSID ${report.msid || "?"})`);
+  lines.push(`  buildings: ${report.buildings.length}`);
+  for (const b of report.buildings) {
+    const pretty = b.permanentSqFt === null ? "(no printed subtotal)" : `${b.permanentSqFt.toLocaleString("en-US")} sq ft`;
+    lines.push(`    bldg ${b.id.padEnd(4)} ${b.name.padEnd(24)} ${pretty}`);
+  }
+  lines.push(`  rooms parsed: ${report.rooms.length}`);
+  lines.push(`  parsed room area: ${parsedRoomArea(report.rooms).toLocaleString("en-US")} sq ft`);
+  lines.push(`  printed subtotal area: ${permanentTotalArea(report).toLocaleString("en-US")} sq ft`);
+  lines.push("");
+  lines.push("  floor coverings (rooms parsed):");
+  for (const [cover, area] of [...floorCoveringTotals(report.rooms)].sort((a, b) => b[1] - a[1])) {
+    lines.push(`    ${cover.padEnd(18)} ${area.toLocaleString("en-US").padStart(9)} sq ft`);
+  }
+  lines.push("");
+  lines.push(`  restrooms: ${roomsMatching(report.rooms, /RESTROOM/).length}`);
+  lines.push(`  classrooms: ${roomsMatching(report.rooms, /CLASSROOM/).length}`);
+  process.stdout.write(`${lines.join("\n")}\n`);
+  return 0;
+}
+
+function commandReconcile(values: Readonly<Record<string, string | boolean | undefined>>): number {
+  const fishPath = values["fish"];
+  const bid = Number.parseInt(String(values["bid-sqft"] ?? ""), 10);
+  if (typeof fishPath !== "string") throw new Error("--fish is required");
+  if (!Number.isFinite(bid) || bid <= 0) throw new Error("--bid-sqft must be a positive integer");
+  const report = parseFish(readFileSync(fishPath, "utf8"));
+  const rec = reconcile(bid, report);
+  const lines: string[] = [];
+  lines.push("area reconciliation — FISH against the bid table");
+  lines.push(`  bid area:            ${bid.toLocaleString("en-US")} sq ft`);
+  lines.push(`  FISH gross net:      ${rec.grossNetSqFt.toLocaleString("en-US")} sq ft`);
+  lines.push("  excluding space a cleaning contract would not normally service:");
+  for (const step of rec.steps) {
+    lines.push(
+      `    - ${step.label.padEnd(18)} ${step.excludedSqFt.toLocaleString("en-US").padStart(8)} → ${step.remainingSqFt.toLocaleString("en-US")}`,
+    );
+  }
+  lines.push("");
+  lines.push(`  residual: ${rec.residualSqFt.toLocaleString("en-US")} sq ft (${rec.residualRatio.toFixed(3)}x the bid area)`);
+  lines.push(`  closes the gap: ${String(rec.closesGap)}`);
+  lines.push("");
+  lines.push("  UNRESOLVED. " + rec.unresolvedBecause);
+  process.stdout.write(`${lines.join("\n")}\n`);
+  return rec.closesGap ? 0 : 1;
+}
+
+function commandScope(values: Readonly<Record<string, string | boolean | undefined>>): number {
+  const path = values["extract"];
+  if (typeof path !== "string") throw new Error("--extract is required");
+  const pages = readExtract(path);
+  const base = [...parseSites(pages.get(58) ?? "", 58)];
+  const applied = applyAmendments(base, AMENDMENTS);
+  const lines: string[] = [];
+  lines.push("operative scope — the base document as amended");
+  lines.push(`  base table rows:      ${base.length}`);
+  lines.push(`  removed by addendum:  ${applied.removed.length}`);
+  for (const r of applied.removed) {
+    lines.push(`    - ${r.site.costCenter} ${r.site.name} (${r.site.squareFeet.toLocaleString("en-US")} sq ft) by ${r.by}`);
+  }
+  lines.push(`  operative sites:      ${applied.operative.length}`);
+  lines.push(`  operative area:       ${operativeSquareFeet(applied).toLocaleString("en-US")} sq ft`);
+  if (applied.unresolvedDeletions.length > 0) {
+    lines.push("  UNRESOLVED deletions (amendment names a site the table lacks):");
+    for (const u of applied.unresolvedDeletions) lines.push(`    - ${u.costCenter} ${u.siteName} by ${u.by}`);
+  }
+  lines.push("");
+  for (const site of applied.operative) {
+    lines.push(`  ${site.costCenter}  ${site.name.padEnd(28)} ${site.squareFeet.toLocaleString("en-US").padStart(9)} sq ft`);
+  }
+  process.stdout.write(`${lines.join("\n")}\n`);
+  return applied.unresolvedDeletions.length > 0 ? 1 : 0;
+}
+
 function commandReport(values: Readonly<Record<string, string | boolean | undefined>>): number {
   const path = values["extract"];
   const lines: string[] = [];
@@ -290,6 +380,8 @@ function main(argv: readonly string[]): number {
         extract: { type: "string" },
         area: { type: "string" },
         "paid-minutes": { type: "string" },
+        fish: { type: "string" },
+        "bid-sqft": { type: "string" },
       },
     });
   } catch (error: unknown) {
@@ -314,6 +406,12 @@ function main(argv: readonly string[]): number {
         return commandSites(parsed.values);
       case "breakeven":
         return commandBreakeven(parsed.values);
+      case "fish":
+        return commandFish(parsed.values);
+      case "reconcile":
+        return commandReconcile(parsed.values);
+      case "scope":
+        return commandScope(parsed.values);
       case "report":
         return commandReport(parsed.values);
       default:
