@@ -63,7 +63,7 @@ inductive Subject where
   | attribution
   /-- A named person's moral state, guilt, or standing before God. -/
   | condemnation
-deriving DecidableEq, Repr
+deriving DecidableEq, Repr, BEq
 
 /-- The instrument's standing, per subject.
 
@@ -115,7 +115,7 @@ inductive Evidence where
   | retired (reason : String)
   /-- Nothing measured. -/
   | unmeasured
-deriving DecidableEq, Repr
+deriving DecidableEq, Repr, BEq
 
 /-- Whether evidence bears on a subject at all. Evidence bears on structures and
 on documented actions. It does not bear on a person's moral standing, because
@@ -355,7 +355,7 @@ the policy is the thing causing harm. -/
 inductive Target where
   | conduct
   | rule
-deriving DecidableEq, Repr
+deriving DecidableEq, Repr, BEq
 
 /-- A reply that cites compliance addresses conduct. It therefore does not bear
 on a finding about the rule itself, which is exactly the corporate-adversarial

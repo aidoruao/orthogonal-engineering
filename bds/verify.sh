@@ -21,20 +21,21 @@ if [ ! -x "$TSC_BIN" ]; then
   exit 1
 fi
 
-echo "[1/9] typecheck (strict, exactOptionalPropertyTypes, noUncheckedIndexedAccess)"
+echo "[1/10] typecheck (strict, exactOptionalPropertyTypes, noUncheckedIndexedAccess)"
 "$TSC_BIN" --noEmit
 
-echo "[2/9] build + tests"
+echo "[2/10] build + tests"
 "$TSC_BIN"
 node --test dist/test/*.test.js
 
-echo "[3/9] lean proofs — labor conservation and jurisdiction"
+echo "[3/10] lean proofs — labor conservation and jurisdiction"
 cd "$ROOT"
 lean L2_LABOR.lean
 lean L3_JURISDICTION.lean
 
-echo "[4/9] negative controls (each must be rejected for its stated reason)"
+echo "[4/10] negative controls (each must be rejected for its stated reason)"
 OLEAN_DIR="$(mktemp -d)"
+lean -o "$OLEAN_DIR/L1_BURDEN.olean" L1_BURDEN.lean
 lean -o "$OLEAN_DIR/L2_LABOR.olean" L2_LABOR.lean
 lean -o "$OLEAN_DIR/L3_JURISDICTION.olean" L3_JURISDICTION.lean
 
@@ -68,13 +69,36 @@ if [ "$rejected" -ne 8 ]; then
   exit 1
 fi
 
-echo "[5/9] the specification's numbers, printed from the built code"
+echo "[5/10] TypeScript/Lean jurisdiction bridge (generated from the built gate)"
+cd "$BDS_DIR"
+JURIS_DIR="$(mktemp -d)"
+cp "$OLEAN_DIR/L1_BURDEN.olean" "$JURIS_DIR/"
+cp "$OLEAN_DIR/L3_JURISDICTION.olean" "$JURIS_DIR/"
+node dist/tools/emit-jurisdiction.js > "$JURIS_DIR/TS_JURISDICTION.lean"
+COMBOS="$(grep -c '^theorem ts_c' "$JURIS_DIR/TS_JURISDICTION.lean")"
+if [ "$COMBOS" -ne 160 ]; then
+  echo "FAIL: expected 160 generated combination theorems, found $COMBOS" >&2
+  exit 1
+fi
+if ! ( cd "$JURIS_DIR" && LEAN_PATH="$JURIS_DIR" lean -o TS_JURISDICTION.olean TS_JURISDICTION.lean ); then
+  echo "FAIL: the TypeScript gate and Lean's Righteous disagree (see the named combination above)" >&2
+  exit 1
+fi
+cd "$ROOT"
+if ! LEAN_PATH="$JURIS_DIR" lean L3_BURDEN_BRIDGE.lean; then
+  echo "FAIL: the jurisdiction bridge did not compile against the generated table" >&2
+  exit 1
+fi
+echo "OK: 160/160 combinations agree; bridge compiled"
+
+cd "$BDS_DIR"
+echo "[6/10] the specification's numbers, printed from the built code"
 cd "$BDS_DIR"
 node dist/src/cli.js figures > /dev/null
 node dist/src/cli.js spec > /dev/null
 echo "OK: figures and spec render"
 
-echo "[6/9] the jurisdiction boundary is unrepresentable to cross"
+echo "[7/10] the jurisdiction boundary is unrepresentable to cross"
 # `Subject` has no condemnation member, so no finding can name one. Check the
 # type union itself rather than the word: the source deliberately discusses
 # condemnation in prose, to explain why the type excludes it. A quote-marked
@@ -92,7 +116,7 @@ if ! grep -qF "$EXPECTED_SUBJECT" src/types.ts; then
 fi
 echo "OK: Subject is exactly {structure, attribution}; no condemnation member"
 
-echo "[7/9] fetched documents, if present on this machine"
+echo "[8/10] fetched documents, if present on this machine"
 CORPUS="$ROOT/evidence/bds"
 if [ -d "$CORPUS" ] && [ -f "$CORPUS/19-10_Contract_Cleaning_Services.pdf" ]; then
   if [ -f "$CORPUS/MANIFEST.sha256" ]; then
@@ -107,7 +131,7 @@ else
   echo "      Absence of the corpus is not evidence that the figures reproduce."
 fi
 
-echo "[8/9] no Python in this instrument"
+echo "[9/10] no Python in this instrument"
 python_files="$(find . -path ./node_modules -prune -o -name '*.py' -print 2>/dev/null || true)"
 if [ -n "$python_files" ]; then
   echo "FAIL: Python files found in bds/:" >&2
@@ -116,7 +140,7 @@ if [ -n "$python_files" ]; then
 fi
 echo "OK: no Python files"
 
-echo "[9/9] no tracked L0 material and no untracked docket text"
+echo "[10/10] no tracked L0 material and no untracked docket text"
 cd "$ROOT"
 tracked_raw="$(git ls-files 'evidence/bds/*.pdf' 'evidence/bds/*.txt' 'evidence/bds/*.csv' 2>/dev/null || true)"
 if [ -n "$tracked_raw" ]; then

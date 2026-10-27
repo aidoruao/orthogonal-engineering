@@ -85,10 +85,28 @@ with the invariant deleted, so the gate rejects that class too.
 ./verify.sh
 ```
 
-Nine steps: strict typecheck; 14 tests; both Lean proofs; eight negative controls
-rejected for cause; the figures and spec render from the built code; `Subject` is
-provably `{structure, attribution}` only; the four fetched documents still match
-their manifest; no Python; no raw fetched material tracked.
+Ten steps: strict typecheck; 22 tests; both Lean proofs; eight negative controls
+rejected for cause; the **jurisdiction bridge** — `admissible()` regenerated from
+the built TypeScript and proved to agree with `Righteous` on all 160
+combinations of severity, warrant, evidence tier and falsifier; the figures and
+spec render from the built code; `Subject` is provably `{structure, attribution}`
+only; the four fetched documents still match their manifest; no Python; no raw
+fetched material tracked.
+
+### The two languages cannot drift on the gate either
+
+`admissible()` is the runtime twin of `Righteous` in `L3_JURISDICTION.lean`.
+Saying so in a comment is not a check, so `tools/emit-jurisdiction.ts` calls the
+**built** gate on all 160 combinations and emits one Lean theorem per
+combination; `L3_BURDEN_BRIDGE.lean` proves them. The tables are output, not
+input, so they cannot be edited into agreement. Removing the
+`severity_exceeds_warrant` rule from `src/types.ts` makes the gate fail and name
+the exact combinations — verified by doing it.
+
+The bridge also proves where the layers **differ**: `bds` is deliberately
+stricter, refusing a `critical` finding on unsupported evidence where the bare
+predicate would allow it. That gap is exhibited (`critical_on_unmeasured`) rather
+than left for a reader to discover.
 
 ## Honest status
 
