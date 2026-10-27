@@ -22,20 +22,21 @@ if [ ! -x "$TSC_BIN" ]; then
   exit 1
 fi
 
-echo "[1/12] typecheck (strict, exactOptionalPropertyTypes, noUncheckedIndexedAccess)"
+echo "[1/13] typecheck (strict, exactOptionalPropertyTypes, noUncheckedIndexedAccess)"
 "$TSC_BIN" --noEmit
 
-echo "[2/12] build + tests"
+echo "[2/13] build + tests"
 "$TSC_BIN"
 node --test dist/test/*.test.js
 
-echo "[3/12] lean proof"
+echo "[3/13] lean proof"
 cd "$ROOT"
 lean L1_BURDEN.lean
 
-echo "[4/12] negative controls (all must be rejected)"
+echo "[4/13] negative controls (each must be rejected for its stated reason)"
 OLEAN_DIR="$(mktemp -d)"
 lean -o "$OLEAN_DIR/L1_BURDEN.olean" L1_BURDEN.lean
+lean -o "$OLEAN_DIR/L1_INELASTICITY.olean" L1_INELASTICITY.lean
 
 rejected=0
 for control in \
@@ -47,22 +48,34 @@ for control in \
   burden/negative/BURDEN_UPGRADE.lean \
   burden/negative/BURDEN_VACUOUS_RATE.lean \
   burden/negative/BURDEN_WEIGHT_COLLAPSE.lean \
-  burden/negative/BURDEN_BRIDGE_DRIFT.lean
+  burden/negative/BURDEN_BRIDGE_DRIFT.lean \
+  burden/negative/INELASTICITY_FIT_EXISTS.lean
 do
-  if LEAN_PATH="$OLEAN_DIR" lean "$control" >/dev/null 2>&1; then
+  CONTROL_LOG="$(mktemp)"
+  if LEAN_PATH="$OLEAN_DIR" lean "$control" > "$CONTROL_LOG" 2>&1; then
     echo "FAIL: $control compiled. Its invariant is vacuous." >&2
+    exit 1
+  fi
+  # A control must fail because the asserted proposition is refuted, not because
+  # Lean could not elaborate the file. An unknown name or an unsynthesizable
+  # instance would make a control fail even if the invariant it attacks had been
+  # deleted, which is the opposite of a falsifier. This check exists because
+  # that happened once while adding the inelasticity control.
+  if grep -qE 'failed to synthesize|unknown identifier|unknown constant|unknown module|unexpected token' "$CONTROL_LOG"; then
+    echo "FAIL: $control was rejected for the wrong reason; it would fail even with its invariant removed:" >&2
+    head -5 "$CONTROL_LOG" >&2
     exit 1
   fi
   rejected=$((rejected + 1))
   echo "OK: rejected $control"
 done
 
-if [ "$rejected" -ne 9 ]; then
-  echo "FAIL: expected 9 negative controls, ran $rejected" >&2
+if [ "$rejected" -ne 10 ]; then
+  echo "FAIL: expected 10 negative controls, ran $rejected" >&2
   exit 1
 fi
 
-echo "[5/12] TypeScript/Lean bridge (generated tables must agree pair by pair)"
+echo "[5/13] TypeScript/Lean bridge (generated tables must agree pair by pair)"
 cd "$BURDEN_DIR"
 BRIDGE_DIR="$(mktemp -d)"
 cp "$OLEAN_DIR/L1_BURDEN.olean" "$BRIDGE_DIR/"
@@ -85,7 +98,7 @@ echo "OK: 31/31 pairs agree; bridge compiled"
 
 cd "$BURDEN_DIR"
 
-echo "[6/12] determinism (same audit twice, byte-identical)"
+echo "[6/13] determinism (same audit twice, byte-identical)"
 cd "$BURDEN_DIR"
 PRECEDENT="$ROOT/The_Indictment_of_the_Watchers_Original_8-21-26.txt"
 PRECEDENT_SHA="2764d1485a7c08133ae39510aff9eb277cf46b6f28cc1d2fa01e2558b6bb1499"
@@ -116,7 +129,7 @@ else
   echo "SKIP: no indictment file at $PRECEDENT (determinism not exercised on the real corpus)"
 fi
 
-echo "[7/12] ledger chain, anchored to a recorded head, and the last verdict reproduced"
+echo "[7/13] ledger chain, anchored to a recorded head, and the last verdict reproduced"
 LEDGER="ledger/receipts.jsonl"
 HEAD_FILE="ledger/HEAD"
 if [ ! -f "$LEDGER" ]; then
@@ -170,13 +183,13 @@ if [ "$REPRODUCED_VERDICT" != "$RECORDED_VERDICT" ]; then
 fi
 echo "OK: recorded falsifier reproduced the verdict: $RECORDED_VERDICT"
 
-echo "[8/12] calibration (must never print a rate without a denominator)"
+echo "[8/13] calibration (must never print a rate without a denominator)"
 node dist/src/cli.js calibrate --ledger ledger/receipts.jsonl
 
-echo "[9/12] adversarial-pattern scan self-test"
+echo "[9/13] adversarial-pattern scan self-test"
 node dist/src/cli.js self-test
 
-echo "[10/12] no Python in the new implementation"
+echo "[10/13] no Python in the new implementation"
 python_files="$(find . -path ./node_modules -prune -o -name '*.py' -print 2>/dev/null || true)"
 if [ -n "$python_files" ]; then
   echo "FAIL: Python files found in burden/:" >&2
@@ -185,7 +198,7 @@ if [ -n "$python_files" ]; then
 fi
 echo "OK: no Python files"
 
-echo "[11/12] no tracked node_modules under burden/"
+echo "[11/13] no tracked node_modules under burden/"
 cd "$ROOT"
 tracked_modules="$(git ls-files 'burden/node_modules/*' 2>/dev/null || true)"
 if [ -n "$tracked_modules" ]; then
@@ -196,7 +209,7 @@ fi
 echo "OK: node_modules is not tracked"
 
 cd "$BURDEN_DIR"
-echo "[12/12] claims trial — the tool against the published claims"
+echo "[12/13] claims trial — the tool against the published claims"
 CLAIMS_FILE="$ROOT/ledger/drafts/verified.jsonl"
 CLAIM_CORPUS="$ROOT/evidence/fleites"
 if [ ! -f "$CLAIMS_FILE" ]; then
@@ -227,6 +240,40 @@ else
   fi
   grep '^claims:' "$TRIAL_LOG" | sed 's/^/OK: /'
 fi
+
+cd "$BURDEN_DIR"
+echo "[13/13] inelasticity — are the published totals the mean of the published levels?"
+cd "$ROOT"
+lean -o "$(mktemp -d)/L1_INELASTICITY.olean" L1_INELASTICITY.lean
+cd "$BURDEN_DIR"
+INELASTIC_LOG="$(mktemp)"
+set +e
+node dist/tools/inelasticity-check.js > "$INELASTIC_LOG" 2>&1
+INELASTIC_EXIT=$?
+set -e
+if [ "$INELASTIC_EXIT" -eq 2 ]; then
+  echo "FAIL: the inelasticity check reported its own arithmetic as broken" >&2
+  cat "$INELASTIC_LOG" >&2
+  exit 1
+fi
+if [ "$INELASTIC_EXIT" -ne 1 ]; then
+  echo "FAIL: expected the published totals to disagree with the published levels (exit 1); got $INELASTIC_EXIT" >&2
+  cat "$INELASTIC_LOG" >&2
+  exit 1
+fi
+# The finding must be the specific one, not merely a non-zero exit.
+if ! grep -q 'forces Medium-High - High = 0.09' "$INELASTIC_LOG"; then
+  echo "FAIL: the contradiction was not the expected one:" >&2
+  cat "$INELASTIC_LOG" >&2
+  exit 1
+fi
+if ! grep -q 'mappings that fail to reproduce their own totals: 0' "$INELASTIC_LOG"; then
+  echo "FAIL: the round-trip control did not pass, so the arithmetic is unreliable" >&2
+  cat "$INELASTIC_LOG" >&2
+  exit 1
+fi
+echo "OK: L1_INELASTICITY.lean proves no monotone equal-weight fit exists"
+echo "OK: the executable arm agrees; C3 cannot exceed C2 on a monotone scale"
 
 echo
 echo "burden verified"

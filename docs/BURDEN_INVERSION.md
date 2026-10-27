@@ -141,6 +141,19 @@ What it cannot do is stated in the receipt, not hidden:
   conversation, and a single text cannot carry that evidence. That gap is named
   here so it is not mistaken for coverage.
 
+## The tool applied to this repository's own work
+
+Two trials are recorded, both including what disagreed:
+
+- [`BURDEN_TRIAL_2026-10-24.md`](BURDEN_TRIAL_2026-10-24.md) — the 17 published
+  docket claims, audited against the L0 corpus (17/17 reproduce), plus mutation
+  tests showing the tool can disagree.
+- [`INELASTICITY_FINDING.md`](INELASTICITY_FINDING.md) — the four worldview
+  totals in `historical_tests/`, tested against the per-category levels the same
+  report publishes. `L1_INELASTICITY.lean` proves no ordered assignment of level
+  values reproduces them under the only weighting the report names. The
+  ordering is untouched; the derivation gap is localized.
+
 ## Why not a trained local model
 
 A model's competence is not inspectable, and an uninspectable component cannot
@@ -168,9 +181,14 @@ that can be checked.
 cd burden && ./verify.sh
 ```
 
-Twelve gates: typecheck, 53 tests, the Lean proof, nine negative controls that
+Thirteen gates: typecheck, 60 tests, the Lean proofs, ten negative controls that
 must fail to compile, the TypeScript/Lean bridge (31 pairs regenerated and
 compiled), deterministic re-run comparison, ledger chain verification and
 reproduction of the last recorded verdict by its own falsifier command,
-calibration, the scan self-test, a no-Python guard, and a
-no-tracked-`node_modules` guard, and the claims trial against the L0 corpus.
+calibration, the scan self-test, a no-Python guard, a
+no-tracked-`node_modules` guard, the claims trial against the L0 corpus, and the
+inelasticity check.
+
+Each negative control must also fail *for its stated reason*. A control rejected
+because Lean could not elaborate the file would fail even with the invariant
+removed — the opposite of a falsifier — so the gate rejects that too.

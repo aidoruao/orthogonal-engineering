@@ -92,8 +92,11 @@ Proved in `L1_BURDEN.lean`, enforced at runtime in `src/validate.ts`:
 - No rate without a denominator — `ratePercent n 0 = none`.
 - No weight collapse: a load-bearing failure is `critical`, and nothing else is.
 
-Nine negative controls in `negative/` assert the negations and must fail to
-compile. If one compiles, its invariant is vacuous and `verify.sh` fails.
+Ten negative controls in `negative/` assert the negations and must fail to
+compile. If one compiles, its invariant is vacuous and `verify.sh` fails. Each
+control must also fail *for its stated reason*: a control rejected because Lean
+could not elaborate it would fail even with the invariant removed, so the gate
+treats that as a build failure too.
 
 ## Falsified is not the same as unmeasured
 
@@ -164,11 +167,13 @@ L0-derived records stay on the machine that holds the corpus, per
 ./verify.sh
 ```
 
-Twelve gates: strict typecheck, 53 tests, the Lean proof, nine negative controls
-that must be rejected, the TypeScript/Lean bridge regenerated and compiled
-(31 pairs), byte-identical determinism across two runs, ledger chain
-integrity anchored to a recorded head (with truncation required to be
-detected) plus reproduction of the last recorded verdict by its own falsifier
-command, calibration, the scan self-test, a no-Python guard, a
-no-tracked-`node_modules` guard, and the claims trial (17/17 required, explicit
-WARNING when the corpus is absent).
+Thirteen gates: strict typecheck, 60 tests, the Lean proofs, ten negative
+controls that must each be rejected *for its stated reason* (the gate refuses a
+control that fails because Lean could not elaborate it), the TypeScript/Lean
+bridge regenerated and compiled (31 pairs), byte-identical determinism across
+two runs, ledger chain integrity anchored to a recorded head (with truncation
+required to be detected) plus reproduction of the last recorded verdict by its
+own falsifier command, calibration, the scan self-test, a no-Python guard, a
+no-tracked-`node_modules` guard, the claims trial (17/17 required, explicit
+WARNING when the corpus is absent), and the inelasticity check
+(`L1_INELASTICITY.lean` plus its executable arm).
