@@ -1,3 +1,8 @@
+---
+tags: [burden, verifier, usage, documentation]
+register: documentation
+---
+
 # burden
 
 An autonomous verifier whose identity is the inversion of a broken epistemic
