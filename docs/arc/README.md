@@ -66,3 +66,27 @@ it.
 
 No party is accused of anything in this file. It describes a behavior pattern
 in a transcript.
+
+## The second indictment — `IOW2_BDS_BAY_COUNTY.txt`
+
+Filed 2026-10-27. This source is **append-only and still growing**: the arc has
+no completion date, and the author adds to the file as it continues. It was
+30,461 bytes when first copied this session and 33,081 bytes an hour later, with
+the first 30,461 bytes unchanged. Both states were observed; the filed copy is
+the later one and its hash is in `SOURCES.sha256`.
+
+Consequence for a future session: **check the source before trusting the
+filed copy.** If the file on disk is longer than the filed one, the arc has
+moved and the filed copy is a snapshot, not the current text.
+
+Where IOW 1 argues about an industry, IOW 2 turns the same apparatus on a
+public institution — Bay District Schools, Bay County, Breakfast Point Academy.
+The instrument is `bds/`; the mathematics is `L2_LABOR.lean`; the jurisdiction is
+`L3_JURISDICTION.lean`; the provenance is `bds/docs/EVIDENCE.md`.
+
+Two of IOW 2's own citations did not survive fetching, and the corrections are
+recorded in `bds/docs/EVIDENCE.md` §1: its "Bay County" audit link is the county
+government's report, not the school district's, and the word "custodial" in both
+documents means fiduciary funds rather than cleaning services. That is the
+document's own category of semiotic corruption, found by checking rather than by
+arguing — which is the argument for checking.

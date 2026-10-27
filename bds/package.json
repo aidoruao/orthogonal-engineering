@@ -1,0 +1,17 @@
+{
+  "name": "oe-bds",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Bay District Schools / Breakfast Point Academy audit: the district's own specification, turned into required labor-minutes.",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc",
+    "test": "npm run build && node --test dist/test/*.test.js"
+  },
+  "devDependencies": {
+    "@types/node": "22.18.9",
+    "typescript": "5.9.3"
+  }
+}
