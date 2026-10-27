@@ -17,6 +17,15 @@ confirmed); their own MTDs (docs 68, 67, 140/140.1 p.20). Friedman:
 no docket presence — SEARCH-VERIFIED, unchanged.
 -/
 
+/-! ## Trust assumption
+
+This file uses `native_decide`, which accepts the native compiler's evaluation
+rather than the kernel's. That is a trusted-executable assumption, not a kernel
+check. The inventory and the reasoning are in `docs/TRUST_ASSUMPTIONS.md`.
+-/
+
+
+
 structure Executive where
   name : String
   role : String

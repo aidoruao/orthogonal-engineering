@@ -16,6 +16,13 @@ facto CEO, alter ego); ¶110 p.39 (his sworn Commons statements); his
 own MTD doc 68 p.1. Theorems unchanged in form.
 -/
 
+/-! ## Trust assumption
+
+This file uses `native_decide`, which accepts the native compiler's evaluation
+rather than the kernel's. That is a trusted-executable assumption, not a kernel
+check; treat those results as high-confidence computation rather than proof.
+The inventory and the reasoning are in `docs/TRUST_ASSUMPTIONS.md`.
+-/
 /-! ## 1. MIRRORED TYPES AND WITNESS (from L3_GATHER.lean) -/
 
 structure Executive where

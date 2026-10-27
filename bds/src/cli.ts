@@ -17,6 +17,8 @@
 import { readFileSync } from "node:fs";
 import { parseArgs } from "node:util";
 
+import { AUDIT_FINDINGS, FINDING_LIMITS, INFERENTIAL_LINK, questionedCosts, recurrences } from "./findings.js";
+import { ATTRIBUTION_LIMITS, OFFICE_HOLDINGS, officialsIn, periods, superintendentIn } from "./actors.js";
 import { AMENDMENTS, applyAmendments, operativeSquareFeet } from "./addendum.js";
 import {
   compareArea,
@@ -222,6 +224,71 @@ function commandBreakeven(values: Readonly<Record<string, string | boolean | und
 }
 
 
+
+
+function commandFindings(): number {
+  const lines: string[] = [];
+  const total = questionedCosts();
+  lines.push("audit findings — the auditor's own conclusions, not this tool's");
+  lines.push("");
+  lines.push(`  findings recorded: ${AUDIT_FINDINGS.length}`);
+  lines.push(`  dollar amounts stated by the auditor: ${usd(total)}`);
+  lines.push("");
+  for (const year of [...new Set(AUDIT_FINDINGS.map((f) => f.fiscalYear))].sort()) {
+    lines.push(`  FY${String(year)}`);
+    for (const finding of AUDIT_FINDINGS.filter((f) => f.fiscalYear === year)) {
+      const amount = finding.amountUsd === null ? "" : `  ${usd(finding.amountUsd)}`;
+      lines.push(`    ${finding.id}  [${finding.kind}]${amount}`);
+      lines.push(`      ${finding.heading.slice(0, 88)}`);
+      lines.push(`      ${finding.document} p.${String(finding.page)}${finding.repeatOfPriorYear ? "  (previously reported)" : ""}`);
+    }
+    lines.push("");
+  }
+  const recurring = recurrences();
+  if (recurring.length > 0) {
+    lines.push("  RECURRING ACROSS AUDIT CYCLES");
+    for (const r of recurring) {
+      lines.push(`    ${r.heading}: ${r.occurrences.map((o) => o.id).join(", ")}`);
+    }
+    lines.push("");
+  }
+  lines.push("  CONVERGENT WITH THE LABOUR QUESTION, NOT PROOF OF IT");
+  for (const fact of INFERENTIAL_LINK.convergentFacts) lines.push(`    + ${fact}`);
+  lines.push("  what would establish the specific claim:");
+  for (const item of INFERENTIAL_LINK.whatWouldEstablishTheThesis) lines.push(`    - ${item}`);
+  lines.push(`  status: ${INFERENTIAL_LINK.status}`);
+  lines.push("");
+  lines.push("  WHAT THESE FINDINGS DO NOT ESTABLISH");
+  for (const limit of FINDING_LIMITS) lines.push(`    - ${limit}`);
+  process.stdout.write(`${lines.join("\n")}\n`);
+  return 0;
+}
+
+function commandActors(): number {
+  const lines: string[] = [];
+  lines.push("officials of record — attribution, not verdict");
+  lines.push("");
+  lines.push("  Each row is checkable: open the document, turn to the page, and find");
+  lines.push("  the name beside the office. Nothing here asserts fault, knowledge, or");
+  lines.push("  causation. See L3_JURISDICTION.lean for why that boundary is structural.");
+  lines.push("");
+  for (const period of periods()) {
+    lines.push(`  ${period}`);
+    for (const holding of officialsIn(period)) {
+      const district = holding.district === null ? "" : ` (District ${holding.district})`;
+      lines.push(`    ${holding.name.padEnd(24)} ${holding.office}${district}`);
+      lines.push(`      ${holding.document} p.${String(holding.page)}  [${holding.attributedWith}]`);
+    }
+    const sup = superintendentIn(period);
+    lines.push(`    superintendent of record: ${sup === null ? "none or ambiguous" : sup.name}`);
+    lines.push("");
+  }
+  lines.push("  WHAT THIS LAYER CANNOT PRODUCE");
+  for (const limit of ATTRIBUTION_LIMITS) lines.push(`    - ${limit}`);
+  process.stdout.write(`${lines.join("\n")}\n`);
+  return 0;
+}
+
 function commandFish(values: Readonly<Record<string, string | boolean | undefined>>): number {
   const path = values["fish"];
   if (typeof path !== "string") throw new Error("--fish is required");
@@ -406,6 +473,10 @@ function main(argv: readonly string[]): number {
         return commandSites(parsed.values);
       case "breakeven":
         return commandBreakeven(parsed.values);
+      case "findings":
+        return commandFindings();
+      case "actors":
+        return commandActors();
       case "fish":
         return commandFish(parsed.values);
       case "reconcile":

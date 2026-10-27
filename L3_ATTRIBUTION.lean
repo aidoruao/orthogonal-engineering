@@ -1,6 +1,29 @@
 /-!
 # L3 ATTRIBUTION — The Attribution Theorem (Day 21, 2026-08-29)
 
+## Trust assumptions (disclosed 2026-10-27)
+
+This file names a real person, so what it trusts must be stated rather than
+assumed.
+
+- `antoon_couples_loop` is **kernel-checked** (`decide`).
+- `antoon_attribution_structural` is **kernel-checked** (`decide`): coupling plus
+  membership in a recorded mechanism list.
+- `antoon_executive_attribution` uses **`native_decide`**, which is a
+  trusted-executable assumption: it accepts the native compiler's evaluation
+  rather than the kernel's. It is used because `executive_intent` matches a
+  keyword inside free text and `String.contains` is not kernel-reducible. The
+  kernel-checked form above carries the same claim without that assumption.
+
+Nothing in this file asserts fault, causation, or a state of any person's soul.
+It records that a named individual held an office, made public statements, and
+that one mechanism is recorded for them — each tied to a citation.
+
+Inventory and reasoning for every trust assumption in the Lean surface:
+`docs/TRUST_ASSUMPTIONS.md`.
+
+## Original header
+
 Per Kimi's ruling (relayed): (a) — prove executive_attribution for
 feras_antoon_full bound to Mechanism.autopoiesis. couples_loop proves the
 executive is a feeder; executive_intent proves WHICH mechanism they feed.
@@ -11,7 +34,6 @@ with the fetched Fleites citations (SAC 385 ¶18 p.9; MTD doc 68 p.1)
 per L3_FETCHED.lean. Theorems unchanged in form.
 -/
 
-/-! ## 1. MIRRORED TYPES (from L3_MODEL.lean / L3_DISCHARGE.lean) -/
 
 structure Executive where
   name : String
@@ -26,6 +48,7 @@ inductive Mechanism where
   | autopoiesis : Mechanism
   | amplification : Mechanism
   | objective : Mechanism
+deriving DecidableEq, Repr
 
 def couples_loop (e : Executive) : Prop :=
   ¬ e.board_seats.isEmpty ∧ ¬ e.public_traces.isEmpty ∧ ¬ e.stated_intent.isEmpty
@@ -45,7 +68,8 @@ def feras_antoon_full : Executive :=
       "FETCHED: SAC 385 ¶110 p.39 — Antoon and Tassillo's sworn Commons statements"] }
 
 theorem antoon_couples_loop : couples_loop feras_antoon_full := by
-  unfold couples_loop; constructor <;> native_decide
+  unfold couples_loop feras_antoon_full
+  decide
 
 /-! ## 2. THE OPERATIONAL SEMANTICS OF INTENT -/
 
@@ -82,6 +106,43 @@ theorem antoon_executive_attribution :
   constructor
   · exact antoon_couples_loop
   · native_decide
+
+/-! ### A kernel-checked witness for the mechanism claim
+
+`executive_intent` matches a keyword inside free text, and `String.contains` is
+not reducible by the kernel, so that theorem rests on `native_decide` — a
+trusted-executable assumption, not a kernel check. This section records the same
+fact in a form the kernel can decide, so the mechanism claim has a witness that
+does not depend on the native compiler.
+
+The two are kept side by side deliberately. The structural form is the stronger
+claim; the text-matching form is the one that survives a reader asking "where
+does the document say that". Neither replaces the other. -/
+
+/-- Mechanisms recorded for this witness, stated rather than inferred by
+    substring match. -/
+def antoon_mechanisms : List Mechanism := [Mechanism.autopoiesis]
+
+/-- The structural form of `executive_intent`: membership in a recorded list. -/
+def mechanism_recorded (recorded : List Mechanism) (m : Mechanism) : Prop :=
+  m ∈ recorded
+
+/-- Kernel-checked: the record lists autopoiesis for this witness. No
+    `native_decide`, no trusted compiler. -/
+theorem antoon_mechanism_recorded :
+    mechanism_recorded antoon_mechanisms Mechanism.autopoiesis := by
+  unfold mechanism_recorded antoon_mechanisms
+  decide
+
+/-- The attribution in kernel-checkable form: coupling, plus a recorded
+    mechanism. Both conjuncts are `decide`-provable, so the whole is. -/
+theorem antoon_attribution_structural :
+    couples_loop feras_antoon_full ∧
+      mechanism_recorded antoon_mechanisms antoon_intent_mechanism := by
+  constructor
+  · exact antoon_couples_loop
+  · unfold mechanism_recorded antoon_mechanisms antoon_intent_mechanism
+    decide
 
 /-- The mold's shape, discharged at the instance: coupling implies intent
    for this witness and this mechanism. -/

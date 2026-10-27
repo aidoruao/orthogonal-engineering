@@ -56,6 +56,15 @@ WHAT THIS MEANS FOR THE ARK (honest consequence):
 Run: `lean L3_DOCKET_TIMELINE.lean`.
 -/
 
+/-! ## Trust assumption
+
+This file uses `native_decide`, which accepts the native compiler's evaluation
+rather than the kernel's. That is a trusted-executable assumption, not a kernel
+check. The inventory and the reasoning are in `docs/TRUST_ASSUMPTIONS.md`.
+-/
+
+
+
 /-! ## 1. THE TRAJECTORY, ENCODED AS FOUND -/
 
 structure DocketEvent where

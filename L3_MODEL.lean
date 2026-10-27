@@ -11,6 +11,15 @@ Discipline: `sorry` markers are the SHAPE, tracked via `#print axioms`
 Run: `lean L3_MODEL.lean` (exit 0; warnings from tracked sorries expected).
 -/
 
+/-! ## Trust assumption
+
+This file uses `native_decide`, which accepts the native compiler's evaluation
+rather than the kernel's. That is a trusted-executable assumption, not a kernel
+check. The inventory and the reasoning are in `docs/TRUST_ASSUMPTIONS.md`.
+-/
+
+
+
 /-! ## 1. THE TYPES -/
 
 /-- The human operator (Layer 3's subject). Evidence gathered later must

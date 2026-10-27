@@ -10,6 +10,13 @@ form the formal gather specification for Day 15.
 Run: `lean L3_PROBE.lean`.
 -/
 
+/-! ## Trust assumption
+
+This file uses `native_decide`, which accepts the native compiler's evaluation
+rather than the kernel's. That is a trusted-executable assumption, not a kernel
+check; treat those results as high-confidence computation rather than proof.
+The inventory and the reasoning are in `docs/TRUST_ASSUMPTIONS.md`.
+-/
 /-! ## 1. MIRRORED TYPES (from L3_MODEL.lean, byte-identical semantics) -/
 
 structure Executive where

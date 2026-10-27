@@ -33,6 +33,15 @@ file.
 Run: `lean L3_FETCHED.lean`.
 -/
 
+/-! ## Trust assumption
+
+This file uses `native_decide`, which accepts the native compiler's evaluation
+rather than the kernel's. That is a trusted-executable assumption, not a kernel
+check. The inventory and the reasoning are in `docs/TRUST_ASSUMPTIONS.md`.
+-/
+
+
+
 /-! ## 1. THE LOAD-BEARING DOCUMENTS, AS EXAMINED -/
 
 structure DocketDoc where

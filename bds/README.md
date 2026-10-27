@@ -74,6 +74,7 @@ is the only input in the demand computation that does not come from the district
 | No reply is both an excuse and a justification | `no_free_pass` | `JURISDICTION_FREE_EXCUSE` |
 | Severity may not exceed warrant | `inflation_is_not_righteous` | `JURISDICTION_INFLATED_IS_RIGHTEOUS` |
 | A finding with no falsifier is not righteous | `no_falsifier_is_not_righteous` | `JURISDICTION_UNFALSIFIABLE_IS_RIGHTEOUS` |
+| Every audit finding quote appears on its cited page | `verifyQuotes` in `src/findings.ts` | mutating one digit of a quoted amount fails `test/findings.test.ts` |
 
 Eight negative controls, each of which must fail to compile **for its stated
 reason**. A control rejected because Lean could not elaborate it would fail even
@@ -85,7 +86,7 @@ with the invariant deleted, so the gate rejects that class too.
 ./verify.sh
 ```
 
-Ten steps: strict typecheck; 39 tests; both Lean proofs; eight negative controls
+Fifteen steps: strict typecheck; 62 tests; both Lean proofs; eight negative controls
 rejected for cause; the **jurisdiction bridge** — `admissible()` regenerated from
 the built TypeScript and proved to agree with `Righteous` on all 160
 combinations of severity, warrant, evidence tier and falsifier; the figures and

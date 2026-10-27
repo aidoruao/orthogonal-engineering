@@ -427,3 +427,142 @@ node dist/src/cli.js reconcile --fish '../evidence/bds/site-reports/B. Point 5-1
 
 `reconcile` exits 1 by design when the gap does not close. That exit is the
 finding, not a failure of the tool.
+
+---
+
+# §15. Where the money went — and what the auditor said about it
+
+Everything above measured quantities. None of it asked whether anyone who
+examined the books concluded that something was wrong. The answer is in the
+auditors' own schedules: **six findings across two audit cycles, four with dollar
+amounts, totalling $3,666,230.**
+
+These are the strongest evidence in this package. They are not this
+instrument's inferences; they are findings by Carr, Riggs & Ingram, LLC under
+Government Auditing Standards, dated 24 March 2025 (FY2024), with statutory
+citations.
+
+## The findings
+
+### FY2022 — `dsb_audit_2022.pdf`
+
+| Finding | Type | Amount | Subject |
+| :--- | :--- | ---: | :--- |
+| 2022-001 | Material weakness | — | Lack of appropriate staffing and journal entry review |
+| 2022-002 | Material weakness | $530,000 | Capital outlay misstated across various funds |
+| 2022-005 | Noncompliance | $1,200,000 | Federal awards misclassified (84.425E vs 84.425F) |
+
+The stated cause of all three is the same sentence, in the auditor's words:
+
+> The District lost two key employees in the finance department during the Spring
+> of 2022. The loss of these employees resulted in a lack of staffing needed for
+> appropriate review, a lack of knowledge in some areas due to limited
+> documentation of procedures, as well as a lack of time necessary to perform
+> procedures appropriately. **Replacement staff were not as knowledgeable as
+> expected resulting in errors not being identified.**
+
+### FY2024 — `dsb_audit_2024.pdf`
+
+| Finding | Type | Amount | Subject |
+| :--- | :--- | ---: | :--- |
+| 2024-001 | Material weakness | — | Lack of appropriate staffing leading to audit entries |
+| 2024-002 | Significant deficiency | **$773,629** | Wage rate compliance — Davis-Bacon clauses and certified payrolls |
+| 2024-003 | Noncompliance | $1,162,601 | Expenditures exceeded budget without the board amendment state law requires |
+
+## 2024-002 is the one that bears on labour
+
+This is the finding closest to the question "is the money going to human beings
+appropriately". The auditor's condition, verbatim:
+
+> There were no controls over the wage rate compliance requirements which
+> resulted in the District being unaware that **two of the contractors did not
+> have the required Davis-Bacon wage rate clause in their contracts and were not
+> submitting the required certified payrolls.**
+
+Known questioned costs: **$773,629.** Criteria: 2 CFR §200.303 and 2 CFR Part 176
+Subpart C, which require wage-rate provisions in federally funded construction
+contracts over $2,000 and weekly certified payrolls.
+
+The auditor's cause: projects originally funded from non-federal sources had
+their funding changed mid-process, and the district had no review to check the
+agreements against federal grant requirements when that happened.
+
+**What this establishes:** $773,629 was paid under two contracts that lacked the
+wage-rate clause the law requires, with no certified payrolls, so there is no
+documentary evidence those workers were paid the required wage.
+
+**What it does not establish:** that any worker was underpaid. The auditor
+reports the absence of proof of compliance, not proof of violation. And these
+were *construction* contractors — not custodial staff, and not the cleaning
+contract in RFP 19-10.
+
+## The recurring finding — the structural one
+
+`2022-001` and `2024-001` are the **same deficiency, in two consecutive audit
+cycles**, still open. Both are material weaknesses. The FY2024 schedule marks it
+as previously reported.
+
+A deficiency reported once is an incident. The same deficiency reported twice,
+still open, is a condition. That judgement is the auditor's — the schedule's own
+"previously reported" marking — not this instrument's.
+
+The FY2024 recommendation names the departments directly:
+
+> The District should work to appropriately staff the departments within the
+> District which impact the financial statements including but not limited to
+> **finance, facilities**, management information systems, **payroll**, and human
+> resources.
+
+`facilities` and `payroll` are named by the auditor as understaffed departments.
+
+## How this bears on the labour question — and where it stops
+
+IOW 2's thesis is that the operation depends on unpaid or under-compensated
+labour. Three facts converge with it:
+
+1. A **repeat material weakness** for lack of appropriate staffing, with
+   `facilities` and `payroll` named in the corrective recommendation.
+2. **$773,629** paid to contractors with no wage-rate clause and no certified
+   payrolls.
+3. **$1,162,601** spent over budget without the board amendment state law
+   requires — money moving without the control that is supposed to authorise it.
+
+That is convergence, not proof. **None of these findings concerns custodial
+labour.** None establishes the cleaning specification is infeasible. The
+instrument records the link as `CONVERGENT, NOT PROVEN` and prints it that way.
+
+What would convert convergence into the claim:
+
+- Per-site custodial hours actually paid — from the executed contract or payroll.
+- Task times per square foot — from a district standard or a time study.
+- A finding or admission that cleaning was performed outside paid hours.
+
+None of the three is in any fetched document. The gap is unchanged.
+
+## Verification
+
+Every condition quoted above is checked against the extracted page it cites, by
+`verifyQuotes` in `bds/src/findings.ts`. The comparison strips PDF extraction
+artifacts — `Davis - Bacon` for `Davis-Bacon`, `requirement s` for
+`requirements` — and preserves case, so the check is on characters present, not
+on layout.
+
+Two weaknesses in that check were found by testing it rather than trusting it:
+
+- The first version verified only the first 110 characters of each condition, so
+  a mutated dollar figure passed. It now verifies the whole quotation.
+- The first normalisation glued real word boundaries together
+  (`budgeted amounts in` → `budgeted amountsin`) and produced a false failure. It
+  now removes whitespace entirely rather than guessing which spaces are real.
+
+Both repairs are pinned. Mutating `$32,706` to `$32,707` in a transcription now
+fails the check, as it should.
+
+## Reproduce
+
+```bash
+cd bds && node dist/src/cli.js findings     # all six, with amounts and limits
+```
+
+Gate step 11 renders the findings and fails the build if the output contains a
+verdict the auditor did not state.

@@ -19,6 +19,13 @@ DAY 16 EXECUTION STATUS (honest):
 Run: `lean L3_GATHER.lean`.
 -/
 
+/-! ## Trust assumption
+
+This file uses `native_decide`, which accepts the native compiler's evaluation
+rather than the kernel's. That is a trusted-executable assumption, not a kernel
+check; treat those results as high-confidence computation rather than proof.
+The inventory and the reasoning are in `docs/TRUST_ASSUMPTIONS.md`.
+-/
 /-! ## 1. THE TYPED TERM RECORD -/
 
 /-- One gathered term: field, value, source, status. The compiler checks

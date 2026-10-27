@@ -20,6 +20,13 @@ Friedman: NO docket presence (ECP partner; not a Fleites defendant) —
 his tier stays SEARCH-VERIFIED, recorded honestly.
 -/
 
+/-! ## Trust assumption
+
+This file uses `native_decide`, which accepts the native compiler's evaluation
+rather than the kernel's. That is a trusted-executable assumption, not a kernel
+check; treat those results as high-confidence computation rather than proof.
+The inventory and the reasoning are in `docs/TRUST_ASSUMPTIONS.md`.
+-/
 /-! ## 1. MIRRORED TYPES AND SEMANTICS (from L3_DISCHARGE/L3_ATTRIBUTION) -/
 
 structure Executive where
