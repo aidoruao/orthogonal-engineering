@@ -1,0 +1,10 @@
+{
+  "name": "oe-cage",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The binding around the local model: TypeScript owns the process, Lean owns the gate, Python is an untrusted oracle.",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": { "typecheck": "tsc --noEmit", "build": "tsc", "test": "npm run build && node --test dist/test/*.test.js" },
+  "devDependencies": { "@types/node": "22.18.9", "typescript": "5.9.3" }
+}

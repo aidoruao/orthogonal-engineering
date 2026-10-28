@@ -129,3 +129,61 @@ prevent.
 *is* reachable, run 1 would be indistinguishable from a model that can never
 complete anything. The gate requires all three results, and it fails if any is
 missing.
+
+---
+
+## 6. The one Python file, and what binds it
+
+`cage/worker/infer.py` is the only new Python in this repository. It runs the
+local LoRA adapter. It is bound in three layers, and the layers do different
+jobs.
+
+**TypeScript binds the process** (`cage/src/supervise.ts`). The supervisor
+launches exactly one program with a fixed argument vector — the worker cannot
+choose its own file. It enforces:
+
+| Failure mode | Bound |
+| :--- | :--- |
+| The worker hangs | wall-clock timeout, then `SIGKILL` |
+| The worker floods stdout | byte cap, then `SIGKILL` |
+| The worker crashes | non-zero exit is a `Rejection`, never a throw |
+| The worker lies | every field validated by `admit` |
+| The worker replays an old reply | nonce must echo the request |
+| The worker binary is swapped | file hashed before each call |
+| The worker writes to the caller's log | stderr drained and discarded |
+| The worker phones home | `HF_HUB_OFFLINE=1`, `TRANSFORMERS_OFFLINE=1` |
+
+Every one produces a stable rejection code. None escalates.
+
+**Lean binds the gate** (`L4_CAGE.lean`, kernel-checked, no `sorry`, no
+`native_decide`):
+
+- `accepts_iff_admissible` — the gate accepts exactly the stated conditions
+- `acceptance_requires_nonce` — replay is impossible
+- `accepted_is_nonempty` — a blank cannot be admitted
+- `rejection_always_has_reason` — no anonymous refusal is representable
+- `confidence_irrelevant` — **a model's self-assessment cannot flip the outcome**
+- `proposal_shape` — a `Proposal` carries text, worker hash, and confidence; no verdict field exists
+- `gate_is_total` — every input is classified
+
+**Nothing binds the computation.** What the network generates inside Python is
+unverified. That is not a gap to close; it is why the model may only *propose*.
+A proposal is a candidate for someone else to check.
+
+### The observation that matters
+
+Run live on 2026-10-27 through the real worker, prompt "Reply with exactly the
+word: ready":
+
+```
+ok: true, worker: 83cac2aca880, text: "Reply with exactly the word: ready"
+```
+
+The adapter **echoed the prompt** instead of answering. The binding worked — the
+process ran, the gate admitted a well-formed proposal — but the model's output
+was not an answer. That is a fact about the adapter's quality, not about the
+cage, and it is recorded rather than smoothed over.
+
+Its consequence: the local model cannot yet be trusted even to *propose*
+usefully. `selfReportedConfidence` is emitted as `0.0` because the worker has no
+basis for a number, and the gate records that honestly rather than inventing one.
