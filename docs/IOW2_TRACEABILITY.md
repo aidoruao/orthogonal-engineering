@@ -18,28 +18,39 @@ Status vocabulary: **DONE** (verified, with the check named) · **PARTIAL** ·
 | # | Demand | Status | Evidence / gap |
 | :-- | :--- | :--- | :--- |
 | A1 | Lean 4 + TypeScript for new code, no Python | **DONE** | `bds/verify.sh` step 9 and `burden/verify.sh` step 10 both fail the build on any `.py`; 0 found. Grandfathered `wardens/`, `oe-agent/`, `falsification/` remain Python by the standing exemption. |
-| A2 | "IOW 2 shows what else u can and must use" — the body names **Rocq (Coq), Isabelle/HOL, TLA+, Agda/Idris** | **NOT DONE** | 0 files of any of those four languages exist. Only Lean 4 and TypeScript are in use. |
+| A2 | "IOW 2 shows what else u can and must use" — the body names **Rocq (Coq), Isabelle/HOL, TLA+, Agda/Idris** | **PARTIAL — TLA+ DONE** | TLA+ adopted and gated: `bds/tla/LaborSchedule.tla`, three TLC runs in gate step 14. Rocq, Isabelle/HOL, and Agda remain unused, and the reasoning below is why that is the right call rather than an omission. |
 
-A2 is explicit in the source: the document's §I is titled "What Exists Beyond
-TypeScript and Lean 4?" and the directive says it "shows what else u can and
-must use". Nothing has been used.
+A2 was explicit in the source: §I is titled "What Exists Beyond TypeScript and Lean 4?"
+and the directive says it "shows what else u can and must use".
 
-**Where each would actually earn its place** (not decoration):
+**TLA+ is now in use, and it earned its place.** `L2_LABOR.lean` proves facts
+about a *single allocation*: demand is a function of area and specification,
+partitions cannot create capacity, a shortfall forces the dichotomy. It was being
+cited for "the plan cannot be executed", which is a **temporal** property — a
+question about interleavings over a year of service days, not about one sum.
 
-- **TLA+** — the one with a real target. `L2_LABOR.lean` proves arithmetic facts
-  about a single allocation. It does **not** model the *behaviour over time*: a
-  custodial schedule is a concurrent state machine (staff × rooms × shift
-  boundaries × task windows), and "the plan cannot be executed" is a liveness and
-  safety property of that machine, not a single inequality. TLA+ is the right
-  tool and the current proof is weaker than the claim it is cited for.
-- **Rocq** — nothing here needs a second proof assistant. Adopting it now would
-  be duplication, which the constitution forbids.
-- **Isabelle/HOL** — same.
-- **Agda/Idris** — same.
+`bds/tla/LaborSchedule.tla` models the schedule. TLC decides reachability over
+the entire reachable state space, and three runs form the claim:
 
-So A2 is honestly **PARTIAL-BY-ANALYSIS**: one of the four (TLA+) has a genuine
-open obligation; three would be duplication. That judgement is recorded here
-rather than quietly omitted.
+| Run | Instance | UnpaidAllowed | TLC result |
+| :--- | :--- | :--- | :--- |
+| 1 | demand 270 > capacity 240 | FALSE | `NotComplete` holds — **unreachable**, 71 states exhausted |
+| 2 | the same instance | TRUE | `NotComplete` **violated** — trace carries unpaid minutes |
+| 3 | demand 180 ≤ capacity 240 | FALSE | `NotComplete` **violated** — reachable with zero unpaid |
+
+Run 3 is the non-vacuity control; run 2 is the dichotomy's second branch. The only
+difference between runs 1 and 2 is one boolean. That is the dichotomy exhibited
+executably rather than asserted.
+
+Verified load-bearing: removing the capacity guard from `WorkPaid` makes run 1
+fail, with a counterexample showing `paidToday = 100` against a 60-minute shift.
+
+**Rocq, Isabelle/HOL, Agda/Idris: not adopted, deliberately.** Each is a second
+proof assistant of equivalent power to Lean 4. Adopting one here would duplicate
+the proof layer, which the constitution forbids ("Prefer the standard library or
+the smallest auditable dependency"). No obligation in this repository requires a
+different logic than Lean's. Naming them without a target would be tool
+collection, not rigour.
 
 ---
 
@@ -153,23 +164,41 @@ The document's §III lists three "Axiomatic Targets". None has been built.
 
 ## Summary
 
-- **DONE:** 7 — A1, B4, C1, C2, C5, D2, D3, D5 (8 counting D5)
-- **PARTIAL:** 5 — A2 (by analysis), C3, C4, D1, D4
-- **NOT DONE:** 5 — B1, B2, B3, E (×3 targets, counted once)
-- **BLOCKED:** 0 — nothing here is blocked; the gaps are work not yet done, not
-  work that cannot be done.
+- **DONE:** 8 — A1, A2 (TLA+), B4, C1, C2, C5, D1 (BDS), D2, D3, D5
+- **PARTIAL:** 4 — C3, C4, D1 (industry), D4
+- **NOT DONE:** 3 — B1 (new industry analysis), B2, B3
+- **BLOCKED:** 0 — nothing here is blocked; the gaps are work not yet done.
 
-### The three that matter most, in order
+### The three that still matter most, in order
 
-1. **B1 — the autopoietic-industry workstream has no gate.** The attribution
-   proofs compile but nothing checks them, and they rest on an undocumented
-   `native_decide` assumption plus 8 `sorry` in the model file. For files that
-   name people, that is the weakest link in the repository.
-2. **D1 — the names are fetched and unused.** The board members and the
-   superintendent at both periods are in hash-verified primaries. Building the
-   attribution layer closes the one explicit "do not be afraid" demand.
-3. **A2 — TLA+ has a genuine target.** `L2_LABOR.lean` proves an inequality, not
-   a schedule. "The plan cannot be executed" is a temporal property, and the
-   current proof is cited for more than it establishes.
+1. **B2/B3 — the local AI is blocked on a rule conflict, not on work.**
+   `trained_qwen_1.5b_v1/` is a **LoRA adapter only** (rank 8, targets
+   q/k/gate/o_proj) whose base is `Qwen/Qwen2.5-1.5B`. The base weights *are*
+   cached at `~/.cache/huggingface/hub/models--Qwen--Qwen2.5-1.5B`, but running
+   them needs the Python ML stack, and the standing rule is no new Python. That
+   conflict is named rather than silently resolved — see below.
+2. **B1 — no substantive new analysis of the autopoietic industry.** The layer is
+   now gated and its trust assumptions disclosed, which is real progress, but no
+   new analysis was produced.
+3. **D4 — 8 `sorry` remain in `L3_MODEL.lean`.** Declared and gated, still
+   unproven.
 
-Nothing in this file is a verdict about any person. It is a list of work.
+### The conflict the local-AI demand creates
+
+IOW 2 says: "keep on working and using the local ai of these recent month, the
+investigators, etc."
+
+The local model is a LoRA adapter requiring the Python ML stack. The standing
+rule is: new executable implementation code is strict TypeScript, no Python.
+
+Both cannot be satisfied without a decision:
+
+- **(a)** Permit a Python inference harness, narrowly scoped to *invoking* an
+  existing library rather than implementing logic. Consistent with "grandfathered
+  Python stays", but it admits new Python files.
+- **(b)** Export the model to GGUF and run it from a non-Python runtime. No
+  Python, but needs a conversion step that itself is Python (transformers/peft).
+- **(c)** Leave the model unused and record why.
+
+This is the user's call, not the tool's. Until it is made, B2/B3 stay NOT DONE
+and no work has been done that presumes an answer.

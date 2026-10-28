@@ -86,7 +86,7 @@ with the invariant deleted, so the gate rejects that class too.
 ./verify.sh
 ```
 
-Fifteen steps: strict typecheck; 62 tests; both Lean proofs; eight negative controls
+Fifteen steps: strict typecheck; 62 tests; the Lean proofs; eight negative controls
 rejected for cause; the **jurisdiction bridge** — `admissible()` regenerated from
 the built TypeScript and proved to agree with `Righteous` on all 160
 combinations of severity, warrant, evidence tier and falsifier; the figures and
@@ -108,6 +108,38 @@ The bridge also proves where the layers **differ**: `bds` is deliberately
 stricter, refusing a `critical` finding on unsupported evidence where the bare
 predicate would allow it. That gap is exhibited (`critical_on_unmeasured`) rather
 than left for a reader to discover.
+
+## The schedule, not just the inequality
+
+`L2_LABOR.lean` proves an inequality about one allocation. It was being cited for
+a claim about a *schedule*, and "the plan cannot be executed" is a temporal
+property — a question about interleavings, not about a single sum.
+
+`tla/LaborSchedule.tla` models the schedule, and TLC decides reachability over
+the whole state space. Three runs, and the *pattern* is the claim:
+
+| Run | Instance | UnpaidAllowed | Result |
+| :--- | :--- | :--- | :--- |
+| 1 | demand 270 > capacity 240 | FALSE | `NotComplete` **holds** — unreachable |
+| 2 | the same instance | TRUE | `NotComplete` **violated** — reachable; trace carries unpaid minutes |
+| 3 | demand 180 ≤ capacity 240 | FALSE | `NotComplete` **violated** — reachable |
+
+Run 3 exists so run 1 is not vacuous: a model in which completion is unreachable
+for *any* input would look identical to a correct one. Run 2 exists because the
+difference between it and run 1 is exactly the dichotomy, and the only change is
+one boolean.
+
+Verified load-bearing by removing the capacity guard from `WorkPaid`: run 1 then
+fails, and TLC's counterexample shows `paidToday = 100` against a 60-minute shift.
+
+`tla2tools.jar` is fetched on demand into a gitignored `.tools/` directory and
+checked against a pinned SHA-256, because an unpinned download would make the
+check depend on whatever the network served that day.
+
+What this still does not prove: that any real campus is infeasible. The task
+costs in the model are illustrative. The claim it establishes is about the
+*structure* — that a schedule has no way through when demand exceeds paid
+capacity and unpaid work is excluded.
 
 ## Honest status
 

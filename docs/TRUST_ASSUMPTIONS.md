@@ -92,3 +92,40 @@ The correct summary of this repository's Lean layer is: **a mix of
 kernel-checked results and trusted computation, inventoried here.** Not
 uniformly "mathematically verified". This file exists so nobody has to guess
 which is which.
+
+---
+
+## 5. The TLC model checker
+
+`bds/tla/check.sh` runs TLC over `LaborSchedule.tla`. TLC is a different kind of
+tool from a proof assistant, and its guarantees are different in a way worth
+stating.
+
+**What TLC gives:** exhaustive exploration of a *finite* state space. When it
+reports "No error has been found" and the state queue is empty, every reachable
+state was visited. For the infeasible paid-only instance that means: there is no
+interleaving of paid work that completes the specification — for the modelled
+instance, not for a class of instances.
+
+**What TLC does not give:** a proof about unbounded or parameterised systems. The
+instances checked are concrete integers (4 service days, 60 minutes per shift,
+two task kinds). The *structural* claim generalises by argument; the *checked*
+claim is the instance. Conflating the two would be the same error as calling a
+`native_decide` result a kernel proof.
+
+**Why the instances are small:** exhaustive checking is the point. A larger
+instance would explore fewer of its own states per unit time and buy nothing —
+the question is whether *any* interleaving completes, and 71 states is a complete
+answer for that instance.
+
+**The toolchain itself** is a 2.2 MB jar fetched on demand into a gitignored
+directory and verified against a pinned SHA-256
+(`d532ba31aafe17afba1130f92410d9257454ff7393d1eb2fe032f0c07f352da5`). An unpinned
+download would make the check depend on whatever the network served that day,
+which is the same class of unverified dependency the rest of this file exists to
+prevent.
+
+**Run 3 is the honesty control.** Without a feasible instance in which completion
+*is* reachable, run 1 would be indistinguishable from a model that can never
+complete anything. The gate requires all three results, and it fails if any is
+missing.

@@ -229,6 +229,23 @@ if [ -n "$python_files" ]; then
 fi
 echo "OK: no Python files"
 
+echo "[14/15] the schedule, not just the inequality (TLA+ / TLC)"
+# L2_LABOR.lean proves an inequality about one allocation. It was being cited for
+# a claim about a *schedule*, which is a temporal property. This runs TLC over
+# the full reachable state space of a custodial schedule to check the stronger
+# statement: completion is unreachable when unpaid labour is forbidden, and
+# reachable when it is permitted.
+set +e
+tla/check.sh
+TLA_EXIT=$?
+set -e
+case "$TLA_EXIT" in
+  0) echo "OK: TLA+ schedule verified" ;;
+  2) echo "WARNING: the TLA+ schedule check SKIPPED (see above)." >&2
+     echo "         The schedule claim is therefore NOT verified in this run." >&2 ;;
+  *) echo "FAIL: the TLA+ schedule check failed." >&2; exit 1 ;;
+esac
+
 echo "[15/15] no tracked L0 material and no untracked docket text"
 cd "$ROOT"
 tracked_raw="$(git ls-files 'evidence/bds/*.pdf' 'evidence/bds/*.txt' 'evidence/bds/*.csv' 2>/dev/null || true)"
