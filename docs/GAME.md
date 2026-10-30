@@ -327,6 +327,49 @@ The module refuses to do one thing, deliberately. It does not emit
 trace. An instrument that emitted them would be doing exactly what the arc
 objects to — returning a verdict where a derivation was required.
 
+### The real trace, and a correction it forced on this instrument
+
+`game/src/audit-trace.ts` runs the six BDS findings through the walk. The
+committed artefact is `docs/traces/bds-money-trace.txt`, and `verify.sh` gate 7
+fails if the generated trace ever drifts from it.
+
+**The first version of that module was wrong, and the real data is what exposed
+it.** It had a single field, `statedOverrun`, and concluded "over budget with no
+board amendment" wherever that field was present. Against the real findings it
+produced **four** `overrun_without_authority` findings. The record supports
+**one**.
+
+- `2024-002` states $773,629 paid to two contractors whose contracts lacked
+  Davis-Bacon clauses and who submitted no certified payrolls. That is a
+  compliance deficiency about *missing detection*. It is not a budget overrun.
+- `2022-002` ($530,000 year-end payables understated) and `2022-005`
+  ($1,200,000 Schedule of Expenditures understated) are reporting errors. Neither
+  is a spend.
+
+The repair is structural: an `AmountRole` is now required, and `traceLine`
+branches on it. A number without its role is not evidence — which is the same
+principle as `L1_BURDEN`'s demand for a falsifier, applied to the meaning of a
+figure rather than to the claim about it.
+
+The trace now reports:
+
+| Role | Amount | Meaning |
+| :--- | ---: | :--- |
+| excess over budget | $1,162,601 | `2024-003` — a real overrun, no amendment |
+| questioned cost | $773,629 | `2024-002` — control absent, not misspending |
+| reported understated | $1,730,000 | `2022-002`, `2022-005` — reporting errors |
+| none stated | — | `2022-001`, `2024-001` — material weaknesses |
+| **stated total** | **$3,666,230** | a sum of stated amounts; **not** an overrun, **not** a loss |
+
+Four lines remain `unmeasured` because the audit schedules do not publish the
+adopted allocation. `traceFindings` says so, names the adopted budget as what
+would measure them, and returns `closed: false`. That is the correct state: the
+arc does not get to call an account settled because a total was printed.
+
+The instrument overstated, the instrument caught it, and the correction is a
+type rather than a note. That is the only kind of correction that survives a
+refactor.
+
 ## 11. What is not proved
 
 Every theorem in `L5_COVENANT.lean` and `L6_GAME.lean` is about a structure
@@ -361,7 +404,7 @@ and both are refused.
 ## 12. Running it
 
 ```bash
-cd game && ./verify.sh     # 8 gates, 55 tests
+cd game && ./verify.sh     # 8 gates, 68 tests
 lean L5_COVENANT.lean
 lean L6_GAME.lean
 ```
@@ -370,6 +413,7 @@ lean L6_GAME.lean
 node game/dist/src/cli.js settle --debt 10 --capacity 3 --violator 3 --other 7
 node game/dist/src/cli.js incentive --bond 100 --gain 100 --detects
 node game/dist/src/cli.js inversion --claims 1000 --checks 10 --cost 3 --bond 0
+node game/dist/src/cli.js money                 # the real BDS findings
 ```
 
 Every subcommand prints the evidence object, including its falsifier, and exits

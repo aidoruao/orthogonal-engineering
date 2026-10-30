@@ -1,0 +1,58 @@
+PASS trace-audit-findings
+  falsified if: an audit trace reported as closed while any line rests on a quantity the schedule does not state
+    - 6 finding lines traced
+    - stated total 3666230 — a sum of stated amounts, NOT an overrun and NOT a loss
+    -   excess over budget:   1162601
+    -   questioned cost:      773629
+    -   reported understated: 1730000
+    - 2 structural finding(s) established without needing an absent quantity
+    - 4 line(s) cannot be closed: a quantity no fetched document supplies
+    - NOT closed — 4 line(s) rest on an absent quantity, and the four roles are kept apart because adding them is meaningless
+
+stated total: 3666230
+measured 2 / unmeasured 4 / findings 2
+closed: false
+
+  2024-001  unmeasured
+      absent stated: a material weakness states no dollar amount
+      absent allocated: staffing weakness, not a budget line
+      absent spent: not stated for this finding
+      absent amendment: not a variance; no amendment applies
+      would measure: the staffing level or control this deficiency concerns, so the deficiency can be sized
+      would measure: the adopted allocation for 2024-001, from the object-code budget adopted by the board
+  2024-002  finding
+      absent allocated: the schedule states the amount paid, not the amount budgeted for these contracts
+      absent spent: the schedule states an amount paid, not a total expenditure
+      absent amendment: not a budget variance in the auditor's framing
+      FINDING control_absent 773629: Significant deficiency: two contractors paid without Davis-Bacon clauses or certified payrolls: 773629 paid where the control that would have detected misconduct was absent. This is NOT an overrun and NOT a finding that the money was misspent. dsb_audit_2024.pdf p.102.
+      would measure: the executed contract for 2024-002, to establish whether a wage-rate clause was present
+      would measure: certified payrolls for the same period, which would convert "no detector" into a measurement
+      would measure: the adopted allocation for 2024-002, from the object-code budget adopted by the board
+  2024-003  finding
+      absent allocated: the adopted allocation is not published in the audit schedule; only the excess is stated
+      absent spent: spent = allocated + 1,162,601, and allocated is absent
+      absent amendment: the auditor states the amendment required by state law was not made; a record of a non-made amendment does not exist and cannot be supplied
+      FINDING overrun_without_authority 1162601: Noncompliance: expenditures exceeded budget without required amendment: 1162601 expended over budget with no board amendment recorded. dsb_audit_2024.pdf p.103.
+      would measure: a board amendment for 2024-003 naming the amount, the meeting, and the minute
+      would measure: the adopted allocation for 2024-003, from the object-code budget adopted by the board
+  2022-001  unmeasured
+      absent stated: a material weakness states no dollar amount
+      absent allocated: staffing weakness, not a budget line
+      absent spent: not stated for this finding
+      absent amendment: not a variance
+      would measure: the staffing level or control this deficiency concerns, so the deficiency can be sized
+      would measure: the adopted allocation for 2022-001, from the object-code budget adopted by the board
+  2022-002  unmeasured
+      absent allocated: a reporting weakness, not a budget line
+      absent spent: not stated
+      absent amendment: not a budget variance
+      would measure: the corrected figure for 2022-002, from the audited statement it appears in
+      would measure: the restatement or management response, which would show the correction was made
+      would measure: the adopted allocation for 2022-002, from the object-code budget adopted by the board
+  2022-005  unmeasured
+      absent allocated: the schedule states the understatement, not the allocation
+      absent spent: not stated
+      absent amendment: not a budget variance
+      would measure: the corrected figure for 2022-005, from the audited statement it appears in
+      would measure: the restatement or management response, which would show the correction was made
+      would measure: the adopted allocation for 2022-005, from the object-code budget adopted by the board

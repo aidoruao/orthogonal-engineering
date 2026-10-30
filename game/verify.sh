@@ -129,17 +129,48 @@ echo "[7/8] determinism (same input twice, byte-identical output)"
 # Gate 4 changed directory to the repo root for Lean. Return, or this gate
 # runs a nonexistent binary and `set -e` swallows the reason.
 cd "$GAME_DIR"
-DET_A="$(mktemp)"; DET_B="$(mktemp)"
-node dist/src/cli.js settle --debt 10 --capacity 3 --violator 3 --other 7 > "$DET_A" 2>&1
-node dist/src/cli.js settle --debt 10 --capacity 3 --violator 3 --other 7 > "$DET_B" 2>&1
-if ! cmp -s "$DET_A" "$DET_B"; then
-  echo "FAIL: two identical invocations produced different output" >&2
-  diff "$DET_A" "$DET_B" >&2 || true
+for CASE in \
+  "settle --debt 10 --capacity 3 --violator 3 --other 7" \
+  "money"
+do
+  DET_A="$(mktemp)"; DET_B="$(mktemp)"
+  # shellcheck disable=SC2086
+  node dist/src/cli.js $CASE > "$DET_A" 2>&1
+  # shellcheck disable=SC2086
+  node dist/src/cli.js $CASE > "$DET_B" 2>&1
+  if ! cmp -s "$DET_A" "$DET_B"; then
+    echo "FAIL: two identical invocations of \"$CASE\" produced different output" >&2
+    diff "$DET_A" "$DET_B" >&2 || true
+    rm -f "$DET_A" "$DET_B"
+    exit 1
+  fi
   rm -f "$DET_A" "$DET_B"
+done
+echo "      CLI output is reproducible byte-for-byte (settle, money)"
+
+# The money trace is the artefact a reader inspects, so it is regenerated here
+# and required to match the committed copy exactly. A trace that drifts from
+# the committed one is either an unrecorded code change or an unrecorded
+# finding, and both need a human to look.
+TRACE="$GAME_DIR/../docs/traces/bds-money-trace.txt"
+REGEN="$(mktemp)"
+node dist/src/cli.js money > "$REGEN" 2>&1
+if [ ! -f "$TRACE" ]; then
+  echo "FAIL: committed trace missing at $TRACE" >&2
+  rm -f "$REGEN"
   exit 1
 fi
-rm -f "$DET_A" "$DET_B"
-echo "      CLI output is reproducible byte-for-byte"
+if ! cmp -s "$REGEN" "$TRACE"; then
+  echo "FAIL: the money trace differs from the committed copy at" >&2
+  echo "      $TRACE" >&2
+  echo "      If the change is intended, regenerate and commit it:" >&2
+  echo "        node dist/src/cli.js money > docs/traces/bds-money-trace.txt" >&2
+  diff "$TRACE" "$REGEN" >&2 || true
+  rm -f "$REGEN"
+  exit 1
+fi
+rm -f "$REGEN"
+echo "      money trace matches the committed artefact"
 
 echo "[8/8] language gate (no new Python)"
 BASELINE="$(git -C "$ROOT" rev-list --max-parents=0 HEAD 2>/dev/null | head -1 || true)"

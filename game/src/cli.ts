@@ -23,6 +23,7 @@ import {
   type Mechanism,
 } from "../src/incentive.js";
 import { applyGrace, classifyClaim, settle, type Settlement } from "../src/covenant.js";
+import { BDS_FINDING_LINES, traceFindings } from "../src/audit-trace.js";
 
 type Args = ReadonlyMap<string, string>;
 
@@ -117,9 +118,41 @@ function main(argv: readonly string[]): number {
       };
       return emit(applyGrace({ base, supplied: need(flags, "supplied") }));
     }
+    case "money": {
+      // Reads the BDS findings as compiled from the audited statements. This is
+      // not a synthetic fixture: every figure is quoted from `findings.ts`, which
+      // quotes the audit at the cited page.
+      const t = traceFindings(BDS_FINDING_LINES);
+      if (!t.ok) return emit(t);
+      const lines = t.value.lines.map((l) => {
+        const head = `  ${l.id}  ${l.status}`;
+        const gaps = l.gaps.map((g) => `      absent ${g.field}: ${g.why}`);
+        const finds = l.findings.map(
+          (f) => `      FINDING ${f.kind} ${f.amount}: ${f.detail}`,
+        );
+        const need = l.wouldMeasure.map((m) => `      would measure: ${m}`);
+        return [head, ...gaps, ...finds, ...need].join("\n");
+      });
+      process.stdout.write(
+        [
+          render(t),
+          "",
+          `stated total: ${t.value.statedTotal}`,
+          `measured ${t.value.measuredCount} / unmeasured ${t.value.unmeasuredCount} ` +
+            `/ findings ${t.value.findingCount}`,
+          `closed: ${t.value.closed}`,
+          "",
+          ...lines,
+        ].join("\n") + "\n",
+      );
+      // Exit 0 when the trace ran. A trace that finds holes is a successful
+      // trace; the holes are its result, not its failure. Exit 1 is reserved
+      // for a trace that could not be performed at all.
+      return 0;
+    }
     default: {
       process.stderr.write(
-        `unknown subcommand "${cmd}". Expected: incentive | settle | claim | inversion | grace\n`,
+        `unknown subcommand "${cmd}". Expected: incentive | settle | claim | inversion | grace | money\n`,
       );
       return 2;
     }

@@ -63,6 +63,8 @@ export type BudgetLine = {
 
 export type MoneyFindingKind =
   | "overrun_without_authority"
+  /** A payment made where the control that would have detected misconduct was absent. */
+  | "control_absent"
   | "residual_unowned"
   | "negative_line"
   | "authority_not_recorded";
