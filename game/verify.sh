@@ -1,22 +1,26 @@
 #!/usr/bin/env bash
 # Verify the game instrument.
 #
-# Eight gates. Each one is required, and three of them exist specifically to
+# Nine gates. Each one is required, and four of them exist specifically to
 # catch the failure this package is about: a check that passes without having
 # checked anything.
 #
-#   [6] axiom audit   — a proof that depends on `sorryAx` is a proof that does
+#   [5] axiom audit   — a proof that depends on `sorryAx` is a proof that does
 #                       not exist. A proof that depends on `native_decide` is a
 #                       proof about the compiler's evaluator, not about Lean's
 #                       kernel. Both are named and both are refused.
-#   [7] negative      — every control must fail to compile, and must fail
+#   [6] negative      — every control must fail to compile, and must fail
 #                       because its proposition is refuted rather than because
 #                       Lean could not elaborate the file. A control that fails
 #                       for the wrong reason would still fail with the
 #                       invariant deleted.
+#   [7] determinism   — the committed money trace must regenerate byte-identically.
 #   [8] language      — no new Python. The rule is mechanism, not intention.
+#   [9] provenance    — game's six citations must agree with bds's six. This gate
+#                       was added after five of six page numbers here turned out
+#                       to be guesses. See tools/cross-check-findings.mjs.
 #
-# Usage: ./verify.sh  (exit 0 only if all eight gates pass)
+# Usage: ./verify.sh  (exit 0 only if all nine gates pass)
 
 set -euo pipefail
 
@@ -32,21 +36,21 @@ if [ ! -x "$TSC_BIN" ]; then
   exit 1
 fi
 
-echo "[1/8] typecheck (strict, exactOptionalPropertyTypes, noUncheckedIndexedAccess)"
+echo "[1/9] typecheck (strict, exactOptionalPropertyTypes, noUncheckedIndexedAccess)"
 "$TSC_BIN" --noEmit
 
-echo "[2/8] build"
+echo "[2/9] build"
 "$TSC_BIN"
 
-echo "[3/8] tests"
+echo "[3/9] tests"
 node --test dist/test/*.test.js
 
-echo "[4/8] lean proofs — covenant and mechanism"
+echo "[4/9] lean proofs — covenant and mechanism"
 cd "$ROOT"
 lean L5_COVENANT.lean
 lean L6_GAME.lean
 
-echo "[5/8] axiom audit (no sorryAx, no native_decide, no choice)"
+echo "[5/9] axiom audit (no sorryAx, no native_decide, no choice)"
 OLEAN_DIR="$(mktemp -d)"
 trap 'rm -rf "$OLEAN_DIR"' EXIT
 lean -o "$OLEAN_DIR/L5_COVENANT.olean" L5_COVENANT.lean
@@ -98,7 +102,7 @@ if [ "$PERMITTED" -ne 14 ]; then
 fi
 echo "      14 theorems audited; only propext and Quot.sound appear"
 
-echo "[6/8] negative controls (each must be rejected for its stated reason)"
+echo "[6/9] negative controls (each must be rejected for its stated reason)"
 rejected=0
 for control in \
   game/negative/COVENANT_SUBSTITUTION_NOT_FORCED.lean \
@@ -125,7 +129,7 @@ do
 done
 echo "      $rejected/6 controls rejected for their stated reasons"
 
-echo "[7/8] determinism (same input twice, byte-identical output)"
+echo "[7/9] determinism (same input twice, byte-identical output)"
 # Gate 4 changed directory to the repo root for Lean. Return, or this gate
 # runs a nonexistent binary and `set -e` swallows the reason.
 cd "$GAME_DIR"
@@ -172,7 +176,7 @@ fi
 rm -f "$REGEN"
 echo "      money trace matches the committed artefact"
 
-echo "[8/8] language gate (no new Python)"
+echo "[8/9] language gate (no new Python)"
 BASELINE="$(git -C "$ROOT" rev-list --max-parents=0 HEAD 2>/dev/null | head -1 || true)"
 # Count new .py files against the recorded arc baseline. Anything added after
 # that commit must be justified in game/PYTHON_ALLOWLIST, and the allowlist is
@@ -200,4 +204,7 @@ if [ -n "$NEW_PY" ]; then
 fi
 echo "      no unlisted Python added (baseline $BASELINE)"
 
-echo "ALL GATES PASSED"
+echo "[9/9] provenance cross-check (game citations vs bds citations)"
+node tools/cross-check-findings.mjs
+
+echo "ALL GATES PASSED (9/9)"
