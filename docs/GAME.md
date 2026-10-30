@@ -288,7 +288,46 @@ what "sound assembly" means. A claim arriving at the far end carries the whole
 chain of checks that produced it, which is the difference between a result and a
 rumour.
 
-## 10. What is not proved
+## 10. Where the money went
+
+The standing instruction is a question, not a verdict: *where is the money going,
+why, how, is it going appropriately to human beings, or is there something
+shady.* A question phrased that way cannot be answered by a summary. It can only
+be answered by a trace in which every unit is accounted for at every step, and
+in which the steps that cannot be taken are named as unmeasured.
+
+`game/src/money.ts` walks a budget and reports every place it stops being
+traceable. Four invariants, each checked:
+
+- **Conservation** — `allocated − spent = residual` per line, and
+  `Σallocated = Σspent + Σresidual` over the budget. Money does not vanish; if a
+  caller supplies data that loses some, the arithmetic catches it.
+- **An overrun requires a record** — spending above allocation without a
+  recorded board action is a finding. The test is *is there a recorded
+  amendment*, not *which authority is claimed*: a line claiming `within_budget`
+  while spending above it has a record that contradicts itself, and the
+  arithmetic wins.
+- **A residual must be owned** — a non-zero residual with no named holder is a
+  finding. Anonymous residual is where money goes when nobody is looking, and
+  requiring the owner is the only thing that stops "other" from becoming a
+  category.
+- **No denominator, no rate** — a per-pupil, per-square-foot, or percentage
+  figure with nothing underneath it is `unmeasured`. Mirrors
+  `L1_BURDEN.ratePercent`: `ratePercent n 0 = none`. There is no vacuous 100%.
+
+The labour share is the field where the question *is it going to human beings*
+becomes checkable. `labourShare` returns exact basis points, or refuses. Where
+the record never separated wages from equipment, the answer is `unmeasured`, and
+**that is the finding**: an account that cannot distinguish labour from
+non-labour is an account that cannot answer the only question that matters about
+it.
+
+The module refuses to do one thing, deliberately. It does not emit
+"appropriate" or "shady". Those are conclusions a reader draws from a complete
+trace. An instrument that emitted them would be doing exactly what the arc
+objects to — returning a verdict where a derivation was required.
+
+## 11. What is not proved
 
 Every theorem in `L5_COVENANT.lean` and `L6_GAME.lean` is about a structure
 defined in those files. None of them establishes that any debt exists, that any
@@ -319,10 +358,10 @@ proof that does not exist; a proof that depends on `native_decide` is a claim
 about the compiler's evaluator rather than about Lean's kernel. Both are named
 and both are refused.
 
-## 11. Running it
+## 12. Running it
 
 ```bash
-cd game && ./verify.sh     # 8 gates, 39 tests
+cd game && ./verify.sh     # 8 gates, 55 tests
 lean L5_COVENANT.lean
 lean L6_GAME.lean
 ```
@@ -337,7 +376,7 @@ Every subcommand prints the evidence object, including its falsifier, and exits
 non-zero when the checked proposition does not hold. There is no third state, and
 no subcommand exits 0 on an inapplicable check.
 
-## 12. The language rule, as a gate
+## 13. The language rule, as a gate
 
 The user's rule is that implementation is strict TypeScript and proofs are Lean
 4, with no new Python. A rule that lives only in prose is a preference.
