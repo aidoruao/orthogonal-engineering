@@ -1,0 +1,19 @@
+# Python allowlist — game/
+#
+# The rule this file enforces is the user's, stated more than once: implementation
+# code is strict TypeScript, proofs are Lean 4, and new Python is not admitted.
+# A rule that lives only in prose is a preference. This file is the mechanism.
+#
+# `verify.sh` gate 8 fails when a `.py` file added since the recorded arc
+# baseline (eb6ada8f) is not listed here. The list is the *only* way in, and
+# every entry must carry its reason on the same line.
+#
+# Format:  <repo-relative path>  # <reason>  <who authorized it>
+#
+# It is empty on purpose. The one Python file the arc does contain —
+# `cage/worker/infer.py` — predates this gate and is grandfathered by commit,
+# not exempted by this file. Grandfathering covers code that already existed at
+# a recorded commit; it does not cover code added later.
+#
+# If a case is genuinely bound, add it with its reason. Do not add it to make a
+# gate green.

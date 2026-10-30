@@ -1,0 +1,17 @@
+{
+  "name": "oe-game",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The burden inversion as a mechanism: bonds, settlements, and a governor's view that cannot invent a number.",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc",
+    "test": "npm run build && node --test dist/test/*.test.js"
+  },
+  "devDependencies": {
+    "@types/node": "22.18.9",
+    "typescript": "5.9.3"
+  }
+}
